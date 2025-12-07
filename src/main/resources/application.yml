@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: core
+
+bamboo:
+  rabbitmq:
+    host: 113.44.133.43
+    port: 5672
+    virtualHost: /
+    username: bamboo
+    password: buaagxz123
