@@ -1,7 +1,10 @@
-package com.bamboo.mq;
+package com.bamboo.core.mq;
 
 import com.rabbitmq.client.*;
 
+/**
+ * 全手动实现
+ */
 public class RabbitmqConsumerMine {
     private final static String QUEUE_NAME = "hello";
 

@@ -2,6 +2,23 @@ spring:
   application:
     name: core
 
+  datasource:
+    name: fish
+    url: jdbc:mysql://113.44.133.43:3306/fish
+    username: bamboo
+    password: buaagxz123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+  rabbitmq:
+    host: 113.44.133.43
+    port: 5672
+    username: bamboo
+    password: buaagxz123
+    listener:
+      simple:
+        acknowledge-mode: manual # 开启手动ACK，以使用channel.basicAck
+
 bamboo:
   rabbitmq:
     host: 113.44.133.43
@@ -9,3 +26,4 @@ bamboo:
     virtualHost: /
     username: bamboo
     password: buaagxz123
+    queue: nzf-queue3
