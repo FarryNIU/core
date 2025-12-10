@@ -19,6 +19,29 @@ spring:
       simple:
         acknowledge-mode: manual # 开启手动ACK，以使用channel.basicAck
 
+  data:
+    redis:
+      host: 113.44.133.43
+      port: 6379
+      password: buaagxz123
+      database: 0
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          max-wait: -1ms
+          min-idle: 1
+  cache:
+    type: redis
+    redis:
+      time-to-live: 30m
+      cache-null-values: false
+      use-key-prefix: true
+      key-prefix:
+    cache-names: users,products,orders
+
+
+
 bamboo:
   rabbitmq:
     host: 113.44.133.43
@@ -26,4 +49,4 @@ bamboo:
     virtualHost: /
     username: bamboo
     password: buaagxz123
-    queue: nzf-queue3
+    queue: book
