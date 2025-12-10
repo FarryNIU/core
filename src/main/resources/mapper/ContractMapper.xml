@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bamboo.core.dao.mapper.ContractMapper">
-<!--    获取课程信息-->
+<!--    获取课程信息  -->
     <select id="getContract" parameterType="String" resultType="com.bamboo.core.dao.bean.Contract">
-        SELECT * FROM contract WHERE contractId = #{contractId}
+        SELECT * FROM contract WHERE contractId = #{contractId};
     </select>
 
-<!--    获取全部课程信息-->
-<select id="getContract" parameterType="String" resultType="com.bamboo.core.dao.bean.Contract">
-    SELECT * FROM contract
-</select>
+<!--    增加课程信息  -->
+<!--    <insert id="addContract" parameterType="com.bamboo.firstdemo.bean.User" >-->
+<!--        insert into user (openId,nickName,avatarurl,phone,password) values (#{openid},#{nickName},#{avataurl},#{phone},#{password});-->
+<!--    </insert>-->
 
-<!--    增加课程信息-->
-    <insert id="addUser" parameterType="com.bamboo.firstdemo.bean.User" >
-        insert into user (openId,nickName,avatarurl,phone,password) values (#{openid},#{nickName},#{avataurl},#{phone},#{password});
+    <!--    修改课程状态  -->
+    <insert id="updateContractStatus" parameterType="String" >
+        update contract t set t.status = #{status} where t.contractId = #{contractId};
     </insert>
 
 </mapper>

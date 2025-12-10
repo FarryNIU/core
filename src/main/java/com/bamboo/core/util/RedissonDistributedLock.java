@@ -1,5 +1,6 @@
 package com.bamboo.core.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 @Component
+@Slf4j
 public class RedissonDistributedLock {
     
     @Autowired
@@ -44,18 +46,46 @@ public class RedissonDistributedLock {
             }
         }
     }
-    
-    /**
-     * 可重入锁执行业务
-     */
-    public void executeWithReentrantLock(String lockKey, Runnable task) {
+
+    public <T> T executeWithLockAndPersistence(
+            String lockKey,
+            long waitTime,
+            long leaseTime,
+            TimeUnit unit,
+            Supplier<T> redisOperation,
+            Supplier<T> dbOperation) {
+
         RLock lock = redissonClient.getLock(lockKey);
-        lock.lock();
+        boolean locked = false;
+
         try {
-            task.run();
+            // 尝试获取锁
+            locked = lock.tryLock(waitTime, leaseTime, unit);
+            if (!locked) {
+                throw new RuntimeException("获取分布式锁失败");
+            }
+
+            log.info("成功获取分布式锁: {}", lockKey);
+
+            // 第一步：执行Redis操作（如扣减库存）
+            T redisResult = redisOperation.get();
+
+            // 第二步：执行数据库持久化
+            T dbResult = dbOperation.get();
+
+            log.info("Redis和数据库操作均成功完成");
+            return dbResult;
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("获取锁时被中断", e);
+        } catch (Exception e) {
+            log.error("执行业务逻辑时发生异常", e);
+            throw e;
         } finally {
-            if (lock.isHeldByCurrentThread()) {
+            if (locked && lock.isHeldByCurrentThread()) {
                 lock.unlock();
+                log.info("释放分布式锁: {}", lockKey);
             }
         }
     }
